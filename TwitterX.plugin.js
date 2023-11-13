@@ -1,7 +1,9 @@
 /**
  * @name TwitterX
  * @author Nears
- * @description Converts specific links in user messages.
+ * @description Changes Twitter links to FXTwitter format for proper embedding when shared on Discord. 
+ * @donate https://ko-fi.com/royriver
+ * @source https://github.com/RoyRiv3r/TwitterX.plugin.js
  * @version 0.0.1
  */
 //META{"name":"LinkConverterPlugin"}*//
