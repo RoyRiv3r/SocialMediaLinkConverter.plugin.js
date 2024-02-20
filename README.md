@@ -1,4 +1,4 @@
-# TwitterX.plugin.js
+# SocialMediaLinkConverter.plugin.js
 Betterdiscord plugin.
 
 Converts X/twitter.com, tiktok, instagram links to fxtwitter, vxtiktok, ddinstgram in user messages to see the embed link.
