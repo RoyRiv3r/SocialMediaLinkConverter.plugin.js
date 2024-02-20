@@ -1,10 +1,10 @@
 /**
- * @name TwitterX
+ * @name SocialMediaLinkConverter
  * @author Nears
  * @description Changes Twitter, TikTok, and Instagram links to their respective modified formats for proper embedding when shared on Discord.
  * @donate https://ko-fi.com/royriver
- * @source https://github.com/RoyRiv3r/TwitterX.plugin.js
- * @updateURL https://raw.githubusercontent.com/RoyRiv3r/TwitterX.plugin.js/main/TwitterX.plugin.js
+ * @source https://github.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js
+ * @updateURL https://raw.githubusercontent.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/main/TwitterX.plugin.js
  * @version 0.0.4
  */
 //META{"name":"SocialMediaLinkConverter"}*//
@@ -70,7 +70,7 @@ class SocialMediaLinkConverter {
         let [channelId, message, messageId] = args;
         if (this.settings.convertTwitter) {
           message.content = message.content.replace(
-            /https:\/\/twitter\.com\//g,
+            /https:\/\/(twitter\.com|x\.com)\//g,
             "https://fxtwitter.com/"
           );
         }
@@ -102,7 +102,7 @@ class SocialMediaLinkConverter {
           if (this.settings.convertTwitter) {
             props[0].parsedMessage.content =
               props[0].parsedMessage.content.replace(
-                /https:\/\/twitter\.com\//g,
+                /https:\/\/(twitter\.com|x\.com)\//g,
                 "https://fxtwitter.com/"
               );
           }
