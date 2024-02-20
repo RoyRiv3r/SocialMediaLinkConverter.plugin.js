@@ -4,7 +4,7 @@
  * @description Changes Twitter, TikTok, and Instagram links to their respective modified formats for proper embedding when shared on Discord.
  * @donate https://ko-fi.com/royriver
  * @source https://github.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js
- * @updateURL https://raw.githubusercontent.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/main/TwitterX.plugin.js
+ * @updateURL https://raw.githubusercontent.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/main/SocialMediaLinkConverter.plugin.js
  * @version 0.0.4
  */
 //META{"name":"SocialMediaLinkConverter"}*//
