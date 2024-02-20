@@ -98,25 +98,29 @@ class SocialMediaLinkConverter {
       MessageActions,
       "uploadFiles",
       (_, props) => {
-        if (props.parsedMessage && props.parsedMessage.content) {
+        if (props[0].parsedMessage && props[0].parsedMessage.content) {
           if (this.settings.convertTwitter) {
-            props.parsedMessage.content = props.parsedMessage.content.replace(
-              /https:\/\/twitter\.com\//g,
-              "https://fxtwitter.com/"
-            );
+            props[0].parsedMessage.content =
+              props[0].parsedMessage.content.replace(
+                /https:\/\/twitter\.com\//g,
+                "https://fxtwitter.com/"
+              );
           }
           if (this.settings.convertTikTok) {
-            props.parsedMessage.content = props.parsedMessage.content.replace(
-              /https:\/\/www\.tiktok\.com\//g,
-              "https://www.vxtiktok.com/"
-            );
+            props[0].parsedMessage.content =
+              props[0].parsedMessage.content.replace(
+                /https:\/\/www\.tiktok\.com\//g,
+                "https://www.vxtiktok.com/"
+              );
           }
           if (this.settings.convertInstagram) {
-            props.parsedMessage.content = props.parsedMessage.content.replace(
-              /https:\/\/www\.instagram\.com\//g,
-              "https://www.ddinstagram.com/"
-            );
+            props[0].parsedMessage.content =
+              props[0].parsedMessage.content.replace(
+                /https:\/\/www\.instagram\.com\//g,
+                "https://www.ddinstagram.com/"
+              );
           }
+          props[0] = parsedMessage;
         }
       }
     );
@@ -142,10 +146,8 @@ class SocialMediaLinkConverter {
         );
         panel.appendChild(switchElement);
 
-        // Make the text note white
         switchElement.querySelector(".toggle-note").style.color = "#FFFFFF";
 
-        // Add a separator except after the last element
         if (index < this.defaultConfig.length - 1) {
           const separator = document.createElement("hr");
           separator.style.margin = "10px 0";
