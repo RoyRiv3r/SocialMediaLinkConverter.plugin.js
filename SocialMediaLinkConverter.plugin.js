@@ -5,7 +5,7 @@
  * @donate https://ko-fi.com/royriver
  * @source https://github.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js
  * @updateURL https://raw.githubusercontent.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/main/SocialMediaLinkConverter.plugin.js
- * @version 0.0.5
+ * @version 0.0.6
  */
 
 const SettingsPanel = BdApi.findModuleByProps(
@@ -20,6 +20,7 @@ class SocialMediaLinkConverter {
       convertTwitter: true,
       convertTikTok: true,
       convertInstagram: true,
+      convertBsky: true,
     };
     this.defaultConfig = [
       {
