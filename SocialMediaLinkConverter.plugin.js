@@ -1,13 +1,13 @@
 /**
  * @name SocialMediaLinkConverter
  * @author Nears
- * @description Changes Twitter, TikTok, and Instagram links to their respective modified formats for proper embedding when shared on Discord.
+ * @description Changes Twitter, TikTok, Bsky and Instagram links to their respective modified formats for proper embedding when shared on Discord.
  * @donate https://ko-fi.com/royriver
  * @source https://github.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js
  * @updateURL https://raw.githubusercontent.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/main/SocialMediaLinkConverter.plugin.js
- * @version 0.0.4
+ * @version 0.0.5
  */
-//META{"name":"SocialMediaLinkConverter"}*//
+
 const SettingsPanel = BdApi.findModuleByProps(
   "FormItem",
   "FormSection",
@@ -25,22 +25,25 @@ class SocialMediaLinkConverter {
       {
         type: "switch",
         id: "convertTwitter",
-        // name: "Convert Twitter Links",
         note: "Convert Twitter links to FXTwitter format",
         value: true,
       },
       {
         type: "switch",
         id: "convertTikTok",
-        // name: "Convert TikTok Links",
         note: "Convert TikTok links to VXTikTok format",
         value: true,
       },
       {
         type: "switch",
         id: "convertInstagram",
-        // name: "Convert Instagram Links",
         note: "Convert Instagram links to DDInstagram format",
+        value: true,
+      },
+      {
+        type: "switch",
+        id: "convertBsky",
+        note: "Convert Bsky links to Bsyy format",
         value: true,
       },
     ];
@@ -86,6 +89,12 @@ class SocialMediaLinkConverter {
             "https://www.ddinstagram.com/"
           );
         }
+        if (this.settings.convertBsky) {
+          message.content = message.content.replace(
+            /https:\/\/bsky\.app\//g,
+            "https://bsyy.app/"
+          );
+        }
         args[1] = message;
       }
     );
@@ -118,6 +127,13 @@ class SocialMediaLinkConverter {
               props[0].parsedMessage.content.replace(
                 /https:\/\/www\.instagram\.com\//g,
                 "https://www.ddinstagram.com/"
+              );
+          }
+          if (this.settings.convertBsky) {
+            props[0].parsedMessage.content =
+              props[0].parsedMessage.content.replace(
+                /https:\/\/bsky\.app\//g,
+                "https://bsyy.app/"
               );
           }
           props[0] = parsedMessage;
