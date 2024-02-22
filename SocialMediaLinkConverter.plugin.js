@@ -1,18 +1,12 @@
 /**
  * @name SocialMediaLinkConverter
  * @author Nears
- * @description Changes Twitter, TikTok, Bsky and Instagram links to their respective modified formats for proper embedding when shared on Discord.
+ * @description Changes Twitter, TikTok, Bsky, Threads, Reddit and Instagram links to their respective modified formats for proper embedding when shared on Discord.
  * @donate https://ko-fi.com/royriver
  * @source https://github.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js
  * @updateURL https://raw.githubusercontent.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/main/SocialMediaLinkConverter.plugin.js
- * @version 0.0.6
+ * @version 0.0.7
  */
-
-const SettingsPanel = BdApi.findModuleByProps(
-  "FormItem",
-  "FormSection",
-  "FormTitle"
-);
 
 class SocialMediaLinkConverter {
   constructor() {
@@ -21,33 +15,51 @@ class SocialMediaLinkConverter {
       convertTikTok: true,
       convertInstagram: true,
       convertBsky: true,
+      convertThreads: true,
+      convertReddit: true,
     };
-    this.defaultConfig = [
+
+    this.conversionRules = [
       {
-        type: "switch",
         id: "convertTwitter",
-        note: "Convert Twitter links to FXTwitter format",
-        value: true,
+        regex: /https:\/\/(twitter\.com|x\.com)\//g,
+        replacement: "https://fxtwitter.com/",
       },
       {
-        type: "switch",
         id: "convertTikTok",
-        note: "Convert TikTok links to VXTikTok format",
-        value: true,
+        regex: /https:\/\/www\.tiktok\.com\//g,
+        replacement: "https://www.vxtiktok.com/",
       },
       {
-        type: "switch",
         id: "convertInstagram",
-        note: "Convert Instagram links to DDInstagram format",
-        value: true,
+        regex: /https:\/\/www\.instagram\.com\//g,
+        replacement: "https://www.ddinstagram.com/",
       },
       {
-        type: "switch",
         id: "convertBsky",
-        note: "Convert Bsky links to Bsyy format",
-        value: true,
+        regex: /https:\/\/bsky\.app\//g,
+        replacement: "https://bsyy.app/",
+      },
+      {
+        id: "convertThreads",
+        regex: /https:\/\/(www\.)?threads\.net\//g,
+        replacement: "https://www.vxthreads.net/",
+      },
+      {
+        id: "convertReddit",
+        regex: /https:\/\/(www\.)?reddit\.com\//g,
+        replacement: "https://www.rxddit.com/",
       },
     ];
+
+    this.defaultConfig = this.conversionRules.map((rule) => ({
+      type: "switch",
+      id: rule.id,
+      note: `Convert ${rule.id.replace("convert", "")} links from original to ${
+        rule.replacement.match(/https?:\/\/(www\.)?([^\/]+)/)[2]
+      } format`,
+      value: true,
+    }));
   }
 
   load() {
@@ -72,30 +84,14 @@ class SocialMediaLinkConverter {
       "sendMessage",
       (_, args) => {
         let [channelId, message, messageId] = args;
-        if (this.settings.convertTwitter) {
-          message.content = message.content.replace(
-            /https:\/\/(twitter\.com|x\.com)\//g,
-            "https://fxtwitter.com/"
-          );
-        }
-        if (this.settings.convertTikTok) {
-          message.content = message.content.replace(
-            /https:\/\/www\.tiktok\.com\//g,
-            "https://www.vxtiktok.com/"
-          );
-        }
-        if (this.settings.convertInstagram) {
-          message.content = message.content.replace(
-            /https:\/\/www\.instagram\.com\//g,
-            "https://www.ddinstagram.com/"
-          );
-        }
-        if (this.settings.convertBsky) {
-          message.content = message.content.replace(
-            /https:\/\/bsky\.app\//g,
-            "https://bsyy.app/"
-          );
-        }
+        this.conversionRules.forEach((rule) => {
+          if (this.settings[rule.id]) {
+            message.content = message.content.replace(
+              rule.regex,
+              rule.replacement
+            );
+          }
+        });
         args[1] = message;
       }
     );
@@ -109,35 +105,15 @@ class SocialMediaLinkConverter {
       "uploadFiles",
       (_, props) => {
         if (props[0].parsedMessage && props[0].parsedMessage.content) {
-          if (this.settings.convertTwitter) {
-            props[0].parsedMessage.content =
-              props[0].parsedMessage.content.replace(
-                /https:\/\/(twitter\.com|x\.com)\//g,
-                "https://fxtwitter.com/"
-              );
-          }
-          if (this.settings.convertTikTok) {
-            props[0].parsedMessage.content =
-              props[0].parsedMessage.content.replace(
-                /https:\/\/www\.tiktok\.com\//g,
-                "https://www.vxtiktok.com/"
-              );
-          }
-          if (this.settings.convertInstagram) {
-            props[0].parsedMessage.content =
-              props[0].parsedMessage.content.replace(
-                /https:\/\/www\.instagram\.com\//g,
-                "https://www.ddinstagram.com/"
-              );
-          }
-          if (this.settings.convertBsky) {
-            props[0].parsedMessage.content =
-              props[0].parsedMessage.content.replace(
-                /https:\/\/bsky\.app\//g,
-                "https://bsyy.app/"
-              );
-          }
-          props[0] = parsedMessage;
+          this.conversionRules.forEach((rule) => {
+            if (this.settings[rule.id]) {
+              props[0].parsedMessage.content =
+                props[0].parsedMessage.content.replace(
+                  rule.regex,
+                  rule.replacement
+                );
+            }
+          });
         }
       }
     );
@@ -145,11 +121,10 @@ class SocialMediaLinkConverter {
 
   getSettingsPanel() {
     const panel = document.createElement("div");
-
     this.defaultConfig.forEach((setting, index) => {
       if (setting.type === "switch") {
         const switchElement = this.createToggle(
-          setting.name,
+          setting.id.replace("convert", ""),
           setting.note,
           this.settings[setting.id],
           (checked) => {
@@ -162,9 +137,7 @@ class SocialMediaLinkConverter {
           }
         );
         panel.appendChild(switchElement);
-
         switchElement.querySelector(".toggle-note").style.color = "#FFFFFF";
-
         if (index < this.defaultConfig.length - 1) {
           const separator = document.createElement("hr");
           separator.style.margin = "10px 0";
@@ -172,38 +145,31 @@ class SocialMediaLinkConverter {
         }
       }
     });
-
     return panel;
   }
 
   createToggle(name, note, isChecked, onChange) {
     const toggleContainer = document.createElement("div");
     toggleContainer.className = "toggle-container";
-
     const toggleNote = document.createElement("div");
     toggleNote.className = "toggle-note";
     toggleNote.textContent = note;
     toggleContainer.appendChild(toggleNote);
-
     const toggleLabel = document.createElement("label");
     toggleLabel.className = "toggle";
     toggleContainer.appendChild(toggleLabel);
-
     const toggleInput = document.createElement("input");
     toggleInput.type = "checkbox";
     toggleInput.checked = isChecked;
     toggleInput.onchange = (e) => onChange(e.target.checked);
     toggleLabel.appendChild(toggleInput);
-
     const toggleSlider = document.createElement("span");
     toggleSlider.className = "slider round";
     toggleLabel.appendChild(toggleSlider);
-
     const toggleName = document.createElement("span");
     toggleName.className = "toggle-name";
     toggleName.textContent = name;
     toggleContainer.appendChild(toggleName);
-
     return toggleContainer;
   }
 }
