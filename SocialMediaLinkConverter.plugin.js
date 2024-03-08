@@ -5,7 +5,7 @@
  * @donate https://ko-fi.com/royriver
  * @source https://github.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js
  * @updateURL https://raw.githubusercontent.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/main/SocialMediaLinkConverter.plugin.js
- * @version 0.0.7
+ * @version 0.0.8
  */
 
 class SocialMediaLinkConverter {
@@ -47,7 +47,7 @@ class SocialMediaLinkConverter {
       },
       {
         id: "convertReddit",
-        regex: /https:\/\/(www\.)?reddit\.com\//g,
+        regex: /https:\/\/(www\.|new\.)?reddit\.com\//g,
         replacement: "https://www.rxddit.com/",
       },
     ];
