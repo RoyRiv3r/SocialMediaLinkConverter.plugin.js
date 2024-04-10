@@ -1,11 +1,11 @@
 /**
  * @name SocialMediaLinkConverter
  * @author Nears
- * @description Changes Twitter, TikTok, Bsky, Threads, Reddit and Instagram links to their respective modified formats for proper embedding when shared on Discord.
+ * @description Changes Twitter, TikTok, Bsky, Threads, Reddit, Pixiv, DeviantArt and Instagram links to their respective modified formats for proper embedding when shared on Discord.
  * @donate https://ko-fi.com/royriver
  * @source https://github.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js
  * @updateURL https://raw.githubusercontent.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/main/SocialMediaLinkConverter.plugin.js
- * @version 0.0.8
+ * @version 0.0.9
  */
 
 class SocialMediaLinkConverter {
@@ -17,6 +17,8 @@ class SocialMediaLinkConverter {
       convertBsky: true,
       convertThreads: true,
       convertReddit: true,
+      convertPixiv: true,
+      convertDeviantArt: true,
     };
 
     this.conversionRules = [
@@ -49,6 +51,16 @@ class SocialMediaLinkConverter {
         id: "convertReddit",
         regex: /https:\/\/(www\.|new\.)?reddit\.com\//g,
         replacement: "https://www.rxddit.com/",
+      },
+      {
+        id: "convertPixiv",
+        regex: /https:\/\/(www\.)?pixiv.net\//g,
+        replacement: "https://phixiv.net/",
+      },
+      {
+        id: "convertDeviantArt",
+        regex: /https:\/\/(www\.)?deviantart.com\//g,
+        replacement: "https://www.fxdeviantart.com/",
       },
     ];
 
@@ -121,7 +133,14 @@ class SocialMediaLinkConverter {
 
   getSettingsPanel() {
     const panel = document.createElement("div");
-    this.defaultConfig.forEach((setting, index) => {
+    panel.style.padding = "20px";
+
+    const settingsGrid = document.createElement("div");
+    settingsGrid.style.display = "grid";
+    settingsGrid.style.gridTemplateColumns = "repeat(2, 1fr)";
+    settingsGrid.style.gap = "20px";
+
+    this.defaultConfig.forEach((setting) => {
       if (setting.type === "switch") {
         const switchElement = this.createToggle(
           setting.id.replace("convert", ""),
@@ -136,40 +155,55 @@ class SocialMediaLinkConverter {
             );
           }
         );
-        panel.appendChild(switchElement);
+        settingsGrid.appendChild(switchElement);
         switchElement.querySelector(".toggle-note").style.color = "#FFFFFF";
-        if (index < this.defaultConfig.length - 1) {
-          const separator = document.createElement("hr");
-          separator.style.margin = "10px 0";
-          panel.appendChild(separator);
-        }
       }
     });
+
+    panel.appendChild(settingsGrid);
     return panel;
   }
 
   createToggle(name, note, isChecked, onChange) {
     const toggleContainer = document.createElement("div");
     toggleContainer.className = "toggle-container";
-    const toggleNote = document.createElement("div");
-    toggleNote.className = "toggle-note";
-    toggleNote.textContent = note;
-    toggleContainer.appendChild(toggleNote);
+    toggleContainer.style.display = "flex";
+    toggleContainer.style.alignItems = "center";
+    toggleContainer.style.marginBottom = "10px";
+
     const toggleLabel = document.createElement("label");
     toggleLabel.className = "toggle";
+    toggleLabel.style.marginRight = "10px";
     toggleContainer.appendChild(toggleLabel);
+
     const toggleInput = document.createElement("input");
     toggleInput.type = "checkbox";
     toggleInput.checked = isChecked;
     toggleInput.onchange = (e) => onChange(e.target.checked);
     toggleLabel.appendChild(toggleInput);
+
     const toggleSlider = document.createElement("span");
     toggleSlider.className = "slider round";
     toggleLabel.appendChild(toggleSlider);
+
+    const toggleInfoContainer = document.createElement("div");
+    toggleInfoContainer.style.display = "flex";
+    toggleInfoContainer.style.flexDirection = "column";
+    toggleContainer.appendChild(toggleInfoContainer);
+
     const toggleName = document.createElement("span");
     toggleName.className = "toggle-name";
     toggleName.textContent = name;
-    toggleContainer.appendChild(toggleName);
+    toggleName.style.fontWeight = "bold";
+    toggleName.style.marginBottom = "5px";
+    toggleInfoContainer.appendChild(toggleName);
+
+    const toggleNote = document.createElement("div");
+    toggleNote.className = "toggle-note";
+    toggleNote.textContent = note;
+    toggleNote.style.fontSize = "12px";
+    toggleInfoContainer.appendChild(toggleNote);
+
     return toggleContainer;
   }
 }
