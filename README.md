@@ -47,9 +47,7 @@ If you encounter any issues or have suggestions for improvements, please open an
 ## Previews
 
 <p align="center">
-    <video width="100%" controls>
-        <source src="./demo/better-embed.mp4" type="video/mp4">
-    </video>
+    <img src="./demo/better-embed.gif" alt="Demo GIF" width="100%">
 </p>
 
 <p align="center">
