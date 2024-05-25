@@ -21,7 +21,7 @@
 ## Installation
 
 1. Ensure you have BetterDiscord installed. If not, download and install it from [BetterDiscord's official website](https://betterdiscord.app/).
-2. Download the `SocialMediaLinkConverter.plugin.js` file from the [official repository](https://github.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/blob/main/SocialMediaLinkConverter.plugin.js) or [BetterDiscord plugin repository]() (coming soon).
+2. Download the `SocialMediaLinkConverter.plugin.js` file from the [official repository](https://github.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/blob/main/SocialMediaLinkConverter.plugin.js) or [BetterDiscord plugin repository](https://betterdiscord.app/plugin/SocialMediaLinkConverter).
 3. Navigate to your BetterDiscord plugins folder. You can find this folder by going to User Settings > Plugins > Open Plugin Folder within Discord.
 4. Drag and drop the `SocialMediaLinkConverter.plugin.js` file into the plugins folder.
 5. Enable the SocialMediaLinkConverter plugin from the BetterDiscord plugins tab.
