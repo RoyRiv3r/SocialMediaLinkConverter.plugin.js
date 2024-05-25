@@ -1,57 +1,3 @@
-/**
- * @name SocialMediaLinkConverter
- * @displayName SocialMediaLinkConverter
- * @version 0.1.0
- * @author Nears (RoyRiv3r)
- * @donate https://ko-fi.com/royriver
- * @authorId 196079888791240704
- * @source https://github.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js
- * @updateURL https://raw.githubusercontent.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/main/SocialMediaLinkConverter.plugin.js
- * @description Improves link embedding for multiple websites (Twitter, Tiktok, Instagram, Bsky, etc.)
- */
-/******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
-/******/ 	// The require scope
-/******/ 	var __webpack_require__ = {};
-/******/ 	
-/************************************************************************/
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
-/******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = (exports) => {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/************************************************************************/
-var __webpack_exports__ = {};
-/*!**********************!*\
-  !*** ./src/index.js ***!
-  \**********************/
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
 const config = {
     info: {
         name: 'SocialMediaLinkConverter',
@@ -165,7 +111,7 @@ class MissingZeresDummy {
     }
 }
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (!global.ZeresPluginLibrary
+export default !global.ZeresPluginLibrary
     ? MissingZeresDummy
     : (([Pl, Lib]) => {
           const plugin = (Plugin, Library) => {
@@ -264,7 +210,7 @@ class MissingZeresDummy {
                           },
                           {
                               id: 'Deviantart',
-                              regex: /https?:\/\/(?:www\.)?deviantart\.com\/[\w-]+\/art\/[^\/]+/g,
+                              regex: /https?:\/\/(?:www\.)?deviantart\.com\/\w+\/art\/[a-zA-Z0-9_-]+/g,
                               replacement: 'https://www.fxdeviantart.com/',
                           },
                           {
@@ -442,8 +388,4 @@ class MissingZeresDummy {
               };
           };
           return plugin(Pl, Lib);
-      })(global.ZeresPluginLibrary.buildPlugin(config)));
-
-module.exports = __webpack_exports__["default"];
-/******/ })()
-;
+      })(global.ZeresPluginLibrary.buildPlugin(config));

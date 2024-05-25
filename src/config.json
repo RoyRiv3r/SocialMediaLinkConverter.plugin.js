@@ -1,0 +1,11 @@
+{
+    "name": "SocialMediaLinkConverter",
+    "displayName": "SocialMediaLinkConverter",
+    "version": "0.1.0",
+    "author": "Nears (RoyRiv3r)",
+    "donate": "https://ko-fi.com/royriver",
+    "authorId": "196079888791240704",
+    "source": "https://github.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js",
+    "updateURL": "https://raw.githubusercontent.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/main/SocialMediaLinkConverter.plugin.js",
+    "description": "Improves link embedding for multiple websites (Twitter, Tiktok, Instagram, Bsky, etc.)"
+}
