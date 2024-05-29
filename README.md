@@ -17,6 +17,7 @@
 -   **Link Conversion**: Supports link conversion for various social media platforms, including Reddit, Twitch (Clips), Twitter, Instagram, and more.
 -   **Customizable**: Offers the flexibility to enable or disable link conversion for each platform individually.
 -   **Predefined and Custom Hosts**: Choose from predefined hosts or specify your own.
+-   [ ] Attempt to modify other's embed, (only visible on the client side).
 
 ## Installation
 
@@ -46,13 +47,10 @@ If you encounter any issues or have suggestions for improvements, please open an
 
 ## Previews
 
-<p align="center">
-    <img src="./demo/better-embed.gif" alt="Demo GIF" width="100%">
-</p>
+![better-embed](https://github.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/assets/41067116/62d383b9-d0fa-4c14-956c-8fc4dcd5d0d5)
 
-<p align="center">
-  <img src="./demo/better-embed.png" alt="Preview of SocialMediaLinkConverter Settings">
-</p>
+![better-embed](https://github.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/assets/41067116/418c1cb1-9e7f-43ed-be0a-8acf85cd8db5)
+
 
 ## Acknowledgements
 
