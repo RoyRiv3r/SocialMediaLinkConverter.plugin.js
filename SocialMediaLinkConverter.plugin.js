@@ -1,7 +1,7 @@
 /**
  * @name SocialMediaLinkConverter
  * @displayName SocialMediaLinkConverter
- * @version 0.1.0
+ * @version 0.1.1
  * @author Nears (RoyRiv3r)
  * @donate https://ko-fi.com/royriver
  * @authorId 196079888791240704
@@ -61,16 +61,16 @@ const config = {
             },
         ],
         description: 'Improves link embedding for multiple websites (Twitter, Tiktok, Instagram, Bsky, etc.)',
-        version: '0.1.0',
+        version: '0.1.1',
         donate: 'https://ko-fi.com/royriver',
         source: 'https://github.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js',
         updateURL: 'https://raw.githubusercontent.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/main/SocialMediaLinkConverter.plugin.js',
     },
     changelog: [
         {
-            title: 'Even better!',
+            title: '0.1.1',
             type: 'added',
-            items: ['New design', 'Added support for alternative and custom embed hosts'],
+            items: ['Added Convert on Message Edit toggle', 'Fix Twitch link.', 'Added alternative Bluesky and Threads hosts.'],
         },
     ],
     main: 'SocialMediaLinkConverter.plugin.js',
@@ -178,46 +178,55 @@ class MissingZeresDummy {
                           enabled: true,
                           host: 'https://fxtwitter.com/',
                           customHost: '',
+                          editPatchEnabled: true,
                       },
                       tiktok: {
                           enabled: true,
                           host: 'https://www.tiktokez.com/',
                           customHost: '',
+                          editPatchEnabled: true,
                       },
                       instagram: {
                           enabled: true,
                           host: 'https://www.instagramez.com/',
                           customHost: '',
+                          editPatchEnabled: true,
                       },
                       bsky: {
                           enabled: true,
-                          host: 'https://bsyy.app/',
+                          host: 'https://bskyx.app/',
                           customHost: '',
+                          editPatchEnabled: true,
                       },
                       threads: {
                           enabled: true,
-                          host: 'https://www.vxthreads.net/',
+                          host: 'https://www.fixthreads.net/',
                           customHost: '',
+                          editPatchEnabled: true,
                       },
                       reddit: {
                           enabled: true,
                           host: 'https://redditez.com/',
                           customHost: '',
+                          editPatchEnabled: true,
                       },
                       pixiv: {
                           enabled: true,
                           host: 'https://phixiv.net/',
                           customHost: '',
+                          editPatchEnabled: true,
                       },
                       deviantart: {
                           enabled: true,
                           host: 'https://www.fxdeviantart.com/',
                           customHost: '',
+                          editPatchEnabled: true,
                       },
                       twitch: {
                           enabled: true,
                           host: 'https://clips.fxtwitch.tv/',
                           customHost: '',
+                          editPatchEnabled: true,
                       },
                   },
               };
@@ -245,12 +254,12 @@ class MissingZeresDummy {
                           {
                               id: 'Bsky',
                               regex: /https:\/\/bsky\.app\/profile\/[A-Za-z.]+\/post\/\w+/g,
-                              replacement: 'https://bsyy.app/',
+                              replacement: 'https://bskyx.app/',
                           },
                           {
                               id: 'Threads',
                               regex: /https?:\/\/(?:www\.)?threads\.net\//g,
-                              replacement: 'https://www.vxthreads.net/',
+                              replacement: 'https://www.fixthreads.net/',
                           },
                           {
                               id: 'Reddit',
@@ -264,12 +273,12 @@ class MissingZeresDummy {
                           },
                           {
                               id: 'Deviantart',
-                              regex: /https?:\/\/(?:www\.)?deviantart\.com\/[\w-]+\/art\/[^\/]+/g,
+                              regex: /https?:\/\/(?:www\.)?deviantart\.com\/\w+\/art\/[a-zA-Z0-9_-]+/g,
                               replacement: 'https://www.fxdeviantart.com/',
                           },
                           {
                               id: 'Twitch',
-                              regex: /https?:\/\/(?:clips\.twitch\.tv|(?:www\.)?twitch\.tv\/\w+\/clip)\//g,
+                              regex: /https?:\/\/(?:(?:www\.)?twitch\.tv\/\w+\/clip\/|clips\.twitch\.tv\/)([\w-]+)/g,
                               replacement: 'https://clips.fxtwitch.tv/',
                           },
                       ];
@@ -289,14 +298,16 @@ class MissingZeresDummy {
                   checkForUpdates() {
                       PluginUpdater.checkForUpdate(config.info.name, config.info.version, config.info.updateURL);
                   }
-                  _convertLinks(message) {
+
+                  _convertLinks(message, isEdit = false) {
                       const rulesByPlatform = this.conversionRules.reduce((acc, rule) => {
                           acc[rule.id.toLowerCase()] = rule;
                           return acc;
                       }, {});
 
-                      Object.entries(this.settings.platforms).forEach(([platform, { enabled, host, customHost }]) => {
-                          if (!enabled) return;
+                      Object.entries(this.settings.platforms).forEach(([platform, { enabled, host, customHost, editPatchEnabled }]) => {
+                          if (!enabled || (isEdit && !editPatchEnabled)) return;
+
                           const conversionRule = rulesByPlatform[platform];
                           if (!conversionRule) {
                               Logger.log(`No conversion rule found for ${platform}`);
@@ -304,20 +315,27 @@ class MissingZeresDummy {
                           }
 
                           try {
-                              // Adjusted to check for 'custom' in lowercase
-                              const replacementHost = new URL(host === 'custom' ? customHost : host);
+                              const replacementHost = new URL(host.toLowerCase() === 'custom' ? customHost : host);
                               const oldMessageContent = message.content;
-                              message.content = message.content.replace(conversionRule.regex, (match) => {
-                                  try {
-                                      const url = new URL(match);
-                                      url.host = replacementHost.host;
-                                      url.protocol = replacementHost.protocol;
-                                      return url.href;
-                                  } catch (error) {
-                                      Logger.error(`Error replacing URL for ${platform}: ${error}`);
-                                      return match;
-                                  }
-                              });
+
+                              if (platform === 'twitch') {
+                                  message.content = message.content.replace(conversionRule.regex, (match, clipId) => {
+                                      return `${replacementHost.origin}/${clipId}`;
+                                  });
+                              } else {
+                                  message.content = message.content.replace(conversionRule.regex, (match) => {
+                                      try {
+                                          const url = new URL(match);
+                                          url.host = replacementHost.host;
+                                          url.protocol = replacementHost.protocol;
+                                          return url.href;
+                                      } catch (error) {
+                                          Logger.error(`Error replacing URL for ${platform}: ${error}`);
+                                          return match;
+                                      }
+                                  });
+                              }
+
                               if (oldMessageContent !== message.content) {
                                   Logger.info(`Replacements made for ${platform}: Original: ${oldMessageContent}, New: ${message.content}`);
                               }
@@ -341,7 +359,7 @@ class MissingZeresDummy {
                       const MessageActions = WebpackModules.getByProps('editMessage');
                       Patcher.before(MessageActions, 'editMessage', (_, args) => {
                           const [channelId, messageId, message] = args;
-                          args[[2]] = this._convertLinks(message);
+                          args[2] = this._convertLinks(message, true);
                       });
                   }
 
@@ -362,6 +380,8 @@ class MissingZeresDummy {
                           tiktok: [{ label: 'Alternative (vxtiktok.com)', value: 'https://www.vxtiktok.com/' }],
                           instagram: [{ label: 'Alternative (ddinstagram.com)', value: 'https://www.ddinstagram.com/' }],
                           reddit: [{ label: 'Alternative (rxddit.com)', value: 'https://rxddit.com/' }],
+                          bsky: [{ label: 'Alternative (bsyy.app)', value: 'https://bsyy.app/' }],
+                          threads: [{ label: 'Alternative (vxthreads.net)', value: 'https://vxthreads.net/' }],
                       };
 
                       const predefinedHosts = this.conversionRules.reduce((acc, rule) => {
@@ -387,6 +407,17 @@ class MissingZeresDummy {
                                   platformSettings.enabled,
                                   (checked) => {
                                       platformSettings.enabled = checked;
+                                      this.saveSettings();
+                                  }
+                              )
+                          );
+                          group.append(
+                              new Switch(
+                                  `Convert on Message Edit`,
+                                  `Enable or disable the converting message on edit for ${platformKey}.`,
+                                  platformSettings.editPatchEnabled,
+                                  (checked) => {
+                                      platformSettings.editPatchEnabled = checked;
                                       this.saveSettings();
                                   }
                               )
