@@ -7,16 +7,16 @@ const config = {
             },
         ],
         description: 'Improves link embedding for multiple websites (Twitter, Tiktok, Instagram, Bsky, etc.)',
-        version: '0.1.1',
+        version: '0.1.2',
         donate: 'https://ko-fi.com/royriver',
         source: 'https://github.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js',
         updateURL: 'https://raw.githubusercontent.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/main/SocialMediaLinkConverter.plugin.js',
     },
     changelog: [
         {
-            title: '0.1.1',
+            title: '0.1.2',
             type: 'added',
-            items: ['Added Convert on Message Edit toggle', 'Fix Twitch link.', 'Added alternative Bluesky and Threads hosts.'],
+            items: ['Added youtube embed alternatives (can avoid ads)', 'Added missing subreddit regex link.'],
         },
     ],
     main: 'SocialMediaLinkConverter.plugin.js',
@@ -174,6 +174,12 @@ export default !global.ZeresPluginLibrary
                           customHost: '',
                           editPatchEnabled: true,
                       },
+                      youtube: {
+                          enabled: true,
+                          host: 'https://yt.cdn.13373333.one/',
+                          customHost: '',
+                          editPatchEnabled: true,
+                      },
                   },
               };
 
@@ -209,7 +215,7 @@ export default !global.ZeresPluginLibrary
                           },
                           {
                               id: 'Reddit',
-                              regex: /https?:\/\/(?:www\.|old\.|new\.|sh\.)?reddit\.com\/r\/\w+\/comments\/\w+\/[^\/\s]+(?:\/\w+)?/g,
+                              regex: /https?:\/\/(?:www\.|old\.|new\.|sh\.)?reddit\.com\/(?:r\/\w+\/comments\/\w+\/[^\/\s]+(?:\/\w+)?|r\/\w+\/s\/\w+)/g,
                               replacement: 'https://redditez.com/',
                           },
                           {
@@ -226,6 +232,11 @@ export default !global.ZeresPluginLibrary
                               id: 'Twitch',
                               regex: /https?:\/\/(?:(?:www\.)?twitch\.tv\/\w+\/clip\/|clips\.twitch\.tv\/)([\w-]+)/g,
                               replacement: 'https://clips.fxtwitch.tv/',
+                          },
+                          {
+                              id: 'Youtube',
+                              regex: /^https?:\/\/(?:www\.|music\.|m\.)?(?:youtube\.com\/(?:watch\?.*v=|embed\/|v\/|shorts\/|watch\/|e\/|live\/)|youtu\.be\/)([^/?&]+)/g,
+                              replacement: 'https://yt.cdn.13373333.one/',
                           },
                       ];
                   }
@@ -263,8 +274,15 @@ export default !global.ZeresPluginLibrary
                           try {
                               const replacementHost = new URL(host.toLowerCase() === 'custom' ? customHost : host);
                               const oldMessageContent = message.content;
-
-                              if (platform === 'twitch') {
+                              if (platform === 'youtube') {
+                                  message.content = message.content.replace(conversionRule.regex, (match, videoId) => {
+                                      if (videoId === 'e') {
+                                          const actualVideoId = match.split('/').pop();
+                                          return `${replacementHost.origin}/watch?v=${actualVideoId}&dearrow`;
+                                      }
+                                      return `${replacementHost.origin}/watch?v=${videoId}&dearrow`;
+                                  });
+                              } else if (platform === 'twitch') {
                                   message.content = message.content.replace(conversionRule.regex, (match, clipId) => {
                                       return `${replacementHost.origin}/${clipId}`;
                                   });
@@ -328,6 +346,7 @@ export default !global.ZeresPluginLibrary
                           reddit: [{ label: 'Alternative (rxddit.com)', value: 'https://rxddit.com/' }],
                           bsky: [{ label: 'Alternative (bsyy.app)', value: 'https://bsyy.app/' }],
                           threads: [{ label: 'Alternative (vxthreads.net)', value: 'https://vxthreads.net/' }],
+                          youtube: [{ label: 'Alternative (koutu.be)', value: 'https://koutu.be/' }],
                       };
 
                       const predefinedHosts = this.conversionRules.reduce((acc, rule) => {
