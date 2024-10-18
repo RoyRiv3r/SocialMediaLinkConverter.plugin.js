@@ -51,10 +51,23 @@ If you encounter any issues or have suggestions for improvements, please open an
 
 ![better-embed](https://github.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/assets/41067116/418c1cb1-9e7f-43ed-be0a-8acf85cd8db5)
 
-
 ## Acknowledgements
 
 The build tools for this project are based on [JustOptimize's](https://github.com/JustOptimize) [return-ShowHiddenChannels](https://github.com/JustOptimize/return-ShowHiddenChannels) plugin.
+
+# Services Used in This Project
+
+-   [FxTwitter](https://github.com/FixTweet/FxTwitter), [vxTwitter](https://github.com/dylanpdx/BetterTwitFix)
+-   [VxTikTok](https://github.com/dylanpdx/vxtiktok), [EmbedEz](https://embedez.com)
+-   [DDInstagram](https://github.com/Wikidepia/InstaFix)
+-   [VixBluesky](https://github.com/Rapougnac/VixBluesky)
+-   [FixThreads](https://github.com/milanmdev/fixthreads)
+-   [FxReddit](https://github.com/MinnDevelopment/fxreddit)
+-   [Phixiv](https://github.com/thelaao/phixiv)
+-   [FixDeviantArt](https://github.com/Tschrock/fixdeviantart)
+-   [FxTwitch](https://github.com/seriaati/fxtwitch)
+-   [YouTube Discord Embed](https://github.com/ray-1337/youtube-discord-embed), [Koutube](https://github.com/iGerman00/koutube)
+-   [FxTumblr](https://github.com/knuxify/fxtumblr)
 
 ## License
 
