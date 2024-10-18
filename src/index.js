@@ -7,16 +7,16 @@ const config = {
             },
         ],
         description: 'Improves link embedding for multiple websites (Twitter, Tiktok, Instagram, Bsky, etc.)',
-        version: '0.1.2',
+        version: '0.1.3',
         donate: 'https://ko-fi.com/royriver',
         source: 'https://github.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js',
         updateURL: 'https://raw.githubusercontent.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/main/SocialMediaLinkConverter.plugin.js',
     },
     changelog: [
         {
-            title: '0.1.2',
+            title: '0.1.3',
             type: 'added',
-            items: ['Added youtube embed alternatives (can avoid ads)', 'Added missing subreddit regex link.'],
+            items: ['Improved custom URL', 'Added Tumblr host', 'Added new alternative fxtwitch host'],
         },
     ],
     main: 'SocialMediaLinkConverter.plugin.js',
@@ -122,123 +122,147 @@ export default !global.ZeresPluginLibrary
                   platforms: {
                       twitter: {
                           enabled: true,
-                          host: 'https://fxtwitter.com/',
-                          customHost: '',
+                          host: 'https://fxtwitter.com',
+                          customTemplate: '',
                           editPatchEnabled: true,
                       },
                       tiktok: {
                           enabled: true,
-                          host: 'https://www.tiktokez.com/',
-                          customHost: '',
+                          host: 'https://www.tiktokez.com',
+                          customTemplate: '',
                           editPatchEnabled: true,
                       },
                       instagram: {
                           enabled: true,
-                          host: 'https://www.instagramez.com/',
-                          customHost: '',
+                          host: 'https://www.instagramez.com',
+                          customTemplate: '',
                           editPatchEnabled: true,
                       },
                       bsky: {
                           enabled: true,
-                          host: 'https://bskyx.app/',
-                          customHost: '',
+                          host: 'https://bskyx.app',
+                          customTemplate: '',
                           editPatchEnabled: true,
                       },
                       threads: {
                           enabled: true,
-                          host: 'https://www.fixthreads.net/',
-                          customHost: '',
+                          host: 'https://www.fixthreads.net',
+                          customTemplate: '',
                           editPatchEnabled: true,
                       },
                       reddit: {
                           enabled: true,
-                          host: 'https://redditez.com/',
-                          customHost: '',
+                          host: 'https://rxddit.com',
+                          customTemplate: '',
                           editPatchEnabled: true,
                       },
                       pixiv: {
                           enabled: true,
-                          host: 'https://phixiv.net/',
-                          customHost: '',
+                          host: 'https://phixiv.net',
+                          customTemplate: '',
                           editPatchEnabled: true,
                       },
                       deviantart: {
                           enabled: true,
-                          host: 'https://www.fxdeviantart.com/',
-                          customHost: '',
+                          host: 'https://www.fixdeviantart.com',
+                          customTemplate: '',
                           editPatchEnabled: true,
                       },
                       twitch: {
                           enabled: true,
-                          host: 'https://clips.fxtwitch.tv/',
-                          customHost: '',
+                          host: 'https://clips.fxtwitch.tv',
+                          customTemplate: '',
                           editPatchEnabled: true,
                       },
                       youtube: {
                           enabled: true,
-                          host: 'https://yt.cdn.13373333.one/',
-                          customHost: '',
+                          host: 'https://yt.cdn.13373333.one',
+                          customTemplate: '',
+                          editPatchEnabled: true,
+                      },
+                      tumblr: {
+                          enabled: true,
+                          host: 'https://tpmblr.com',
+                          customTemplate: '',
                           editPatchEnabled: true,
                       },
                   },
               };
 
+              const conversionRules = [
+                  {
+                      id: 'Twitter',
+                      regex: /https?:\/\/(?:www\.)?(?:twitter\.com|x\.com)\/([\w\d_]+)\/status\/(\d+)/gi,
+                      replacement: 'https://fxtwitter.com',
+                      variables: ['username', 'statusId'],
+                  },
+                  {
+                      id: 'Tiktok',
+                      regex: /https?:\/\/(?:www\.)?tiktok\.com\/(@[\w.-]+)\/video\/(\d+)/gi,
+                      replacement: 'https://www.tiktokez.com',
+                      variables: ['username', 'videoId'],
+                  },
+                  {
+                      id: 'Instagram',
+                      regex: /https?:\/\/(?:www\.)?instagram\.com\/(p|reel|tv)\/([\w-]+)/gi,
+                      replacement: 'https://www.instagramez.com',
+                      variables: ['type', 'postId'],
+                  },
+                  {
+                      id: 'Bsky',
+                      regex: /https?:\/\/bsky\.app\/profile\/([\w\d_.-]+)\/post\/([\w\d]+)/gi,
+                      replacement: 'https://bskyx.app',
+                      variables: ['username', 'postId'],
+                  },
+                  {
+                      id: 'Threads',
+                      regex: /https?:\/\/www\.threads\.net\/@([\w\d_.-]+)\/post\/([\w\d]+)/gi,
+                      replacement: 'https://www.fixthreads.net',
+                      variables: ['username', 'postId'],
+                  },
+                  {
+                      id: 'Reddit',
+                      regex: /https?:\/\/(?:www\.|old\.|new\.|np\.)?reddit\.com\/r\/([\w\d_]+)(?:\/(comments|s)\/([\w\d]+)(?:\/([\w\d_-]+))?)?/gi,
+                      replacement: 'https://rxddit.com',
+                      variables: ['subreddit', 'type', 'postId', 'postTitle'],
+                  },
+                  {
+                      id: 'Pixiv',
+                      regex: /https?:\/\/(?:www\.)?pixiv\.net\/(?:en\/)?artworks\/(\d+)/gi,
+                      replacement: 'https://phixiv.net',
+                      variables: ['artworkId'],
+                  },
+                  {
+                      id: 'Deviantart',
+                      regex: /https?:\/\/(?:www\.)?deviantart\.com\/([\w\d_-]+)\/art\/([\w\d_-]+)/gi,
+                      replacement: 'https://www.fixdeviantart.com',
+                      variables: ['username', 'artTitle'],
+                  },
+                  {
+                      id: 'Twitch',
+                      regex: /https?:\/\/(?:(?:www\.)?twitch\.tv\/[\w\d_]+\/clip\/|clips\.twitch\.tv\/)([\w\d-]+)/gi,
+                      replacement: 'https://clips.fxtwitch.tv',
+                      variables: ['clipId'],
+                  },
+                  {
+                      id: 'Youtube',
+                      regex: /https?:\/\/(?:www\.|music\.|m\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|e\/|live\/)|youtu\.be\/)([\w\d_-]+)/gi,
+                      replacement: 'https://yt.cdn.13373333.one',
+                      variables: ['videoId'],
+                  },
+                  {
+                      id: 'Tumblr',
+                      regex: /https?:\/\/(?:www\.)?(?:tumblr\.com)\/([^\/]+)\/(\d+)(?:\/([^\/?#]+))?|https?:\/\/([^\.]+)\.tumblr\.com\/post\/(\d+)(?:\/([^\/?#]+))?/gi,
+                      replacement: 'https://tpmblr.com',
+                      variables: ['username', 'postId', 'postTitle'],
+                  },
+              ];
+
               return class SocialMediaLinkConverter extends Plugin {
                   constructor() {
                       super();
                       this.settings = Utilities.loadData(config.info.name, 'settings', defaultSettings);
-                      this.conversionRules = [
-                          {
-                              id: 'Twitter',
-                              regex: /https:\/\/(twitter\.com|x\.com)\/\w+\/status\/\d+/g,
-                              replacement: 'https://fxtwitter.com/',
-                          },
-                          {
-                              id: 'Tiktok',
-                              regex: /https?:\/\/(?:www\.)?tiktok\.com\/@\w+\/video\/\d+/g,
-                              replacement: 'https://www.tiktokez.com/',
-                          },
-                          {
-                              id: 'Instagram',
-                              regex: /https?:\/\/www\.instagram\.com\/(?:p|reel|tv)\/[a-zA-Z0-9_-]+/g,
-                              replacement: 'https://www.instagramez.com/',
-                          },
-                          {
-                              id: 'Bsky',
-                              regex: /https:\/\/bsky\.app\/profile\/[A-Za-z.]+\/post\/\w+/g,
-                              replacement: 'https://bskyx.app/',
-                          },
-                          {
-                              id: 'Threads',
-                              regex: /https?:\/\/(?:www\.)?threads\.net\//g,
-                              replacement: 'https://www.fixthreads.net/',
-                          },
-                          {
-                              id: 'Reddit',
-                              regex: /https?:\/\/(?:www\.|old\.|new\.|sh\.)?reddit\.com\/(?:r\/\w+\/comments\/\w+\/[^\/\s]+(?:\/\w+)?|r\/\w+\/s\/\w+)/g,
-                              replacement: 'https://redditez.com/',
-                          },
-                          {
-                              id: 'Pixiv',
-                              regex: /https?:\/\/(?:www\.)?pixiv\.net\/(?:en\/)?artworks\/\d+/g,
-                              replacement: 'https://phixiv.net/',
-                          },
-                          {
-                              id: 'Deviantart',
-                              regex: /https?:\/\/(?:www\.)?deviantart\.com\/\w+\/art\/[a-zA-Z0-9_-]+/g,
-                              replacement: 'https://www.fxdeviantart.com/',
-                          },
-                          {
-                              id: 'Twitch',
-                              regex: /https?:\/\/(?:(?:www\.)?twitch\.tv\/\w+\/clip\/|clips\.twitch\.tv\/)([\w-]+)/g,
-                              replacement: 'https://clips.fxtwitch.tv/',
-                          },
-                          {
-                              id: 'Youtube',
-                              regex: /^https?:\/\/(?:www\.|music\.|m\.)?(?:youtube\.com\/(?:watch\?.*v=|embed\/|v\/|shorts\/|watch\/|e\/|live\/)|youtu\.be\/)([^/?&]+)/g,
-                              replacement: 'https://yt.cdn.13373333.one/',
-                          },
-                      ];
+                      this.conversionRules = conversionRules;
                   }
 
                   onStart() {
@@ -262,51 +286,91 @@ export default !global.ZeresPluginLibrary
                           return acc;
                       }, {});
 
-                      Object.entries(this.settings.platforms).forEach(([platform, { enabled, host, customHost, editPatchEnabled }]) => {
-                          if (!enabled || (isEdit && !editPatchEnabled)) return;
+                      for (const [platform, settings] of Object.entries(this.settings.platforms)) {
+                          const { enabled, host, customTemplate, editPatchEnabled } = settings;
+                          if (!enabled || (isEdit && !editPatchEnabled)) continue;
 
                           const conversionRule = rulesByPlatform[platform];
                           if (!conversionRule) {
                               Logger.log(`No conversion rule found for ${platform}`);
-                              return;
+                              continue;
                           }
 
                           try {
-                              const replacementHost = new URL(host.toLowerCase() === 'custom' ? customHost : host);
-                              const oldMessageContent = message.content;
-                              if (platform === 'youtube') {
-                                  message.content = message.content.replace(conversionRule.regex, (match, videoId) => {
-                                      if (videoId === 'e') {
-                                          const actualVideoId = match.split('/').pop();
-                                          return `${replacementHost.origin}/watch?v=${actualVideoId}&dearrow`;
-                                      }
-                                      return `${replacementHost.origin}/watch?v=${videoId}&dearrow`;
-                                  });
-                              } else if (platform === 'twitch') {
-                                  message.content = message.content.replace(conversionRule.regex, (match, clipId) => {
-                                      return `${replacementHost.origin}/${clipId}`;
-                                  });
-                              } else {
-                                  message.content = message.content.replace(conversionRule.regex, (match) => {
-                                      try {
-                                          const url = new URL(match);
-                                          url.host = replacementHost.host;
-                                          url.protocol = replacementHost.protocol;
-                                          return url.href;
-                                      } catch (error) {
-                                          Logger.error(`Error replacing URL for ${platform}: ${error}`);
-                                          return match;
-                                      }
-                                  });
-                              }
+                              const oldContent = message.content;
+                              const regex = conversionRule.regex;
+                              const variablesList = conversionRule.variables;
 
-                              if (oldMessageContent !== message.content) {
-                                  Logger.info(`Replacements made for ${platform}: Original: ${oldMessageContent}, New: ${message.content}`);
+                              message.content = message.content.replace(regex, (match, ...args) => {
+                                  const capturingGroups = args.slice(0, -2);
+                                  const variables = {};
+
+                                  if (conversionRule.id === 'Tumblr') {
+                                      variables['username'] = capturingGroups[0] || capturingGroups[3] || '';
+                                      variables['postId'] = capturingGroups[1] || capturingGroups[4] || '';
+                                      variables['postTitle'] = capturingGroups[2] || capturingGroups[5] || '';
+                                  } else {
+                                      variablesList.forEach((variable, index) => {
+                                          variables[variable] = capturingGroups[index] || '';
+                                      });
+                                  }
+
+                                  const fixedHost = host.replace(/\/+$/, '');
+
+                                  if (host.toLowerCase() === 'custom') {
+                                      let customUrl = customTemplate;
+                                      for (const [key, value] of Object.entries(variables)) {
+                                          customUrl = customUrl.replaceAll(`{{${key}}}`, value);
+                                      }
+                                      return customUrl;
+                                  } else {
+                                      switch (platform) {
+                                          case 'twitter':
+                                              return `${fixedHost}/${variables.username}/status/${variables.statusId}`;
+                                          case 'tiktok':
+                                              return `${fixedHost}/${variables.username}/video/${variables.videoId}`;
+                                          case 'instagram':
+                                              return `${fixedHost}/${variables.type}/${variables.postId}`;
+                                          case 'bsky':
+                                              return `${fixedHost}/profile/${variables.username}/post/${variables.postId}`;
+                                          case 'threads':
+                                              return `${fixedHost}/@${variables.username}/post/${variables.postId}`;
+                                          case 'reddit':
+                                              let redditUrl = `${fixedHost}/r/${variables.subreddit}`;
+                                              if (variables.postId) {
+                                                  redditUrl += `/${variables.type}/${variables.postId}`;
+                                                  if (variables.postTitle) {
+                                                      redditUrl += `/${variables.postTitle}`;
+                                                  }
+                                              }
+                                              return redditUrl;
+                                          case 'pixiv':
+                                              return `${fixedHost}/artworks/${variables.artworkId}`;
+                                          case 'deviantart':
+                                              return `${fixedHost}/${variables.username}/art/${variables.artTitle}`;
+                                          case 'twitch':
+                                              return `${fixedHost}/${variables.clipId}`;
+                                          case 'youtube':
+                                              return `${fixedHost}/watch?v=${variables.videoId}&dearrow`;
+                                          case 'tumblr':
+                                              if (variables.postTitle) {
+                                                  return `${fixedHost}/${variables.username}/${variables.postId}/${variables.postTitle}`;
+                                              } else {
+                                                  return `${fixedHost}/${variables.username}/${variables.postId}`;
+                                              }
+                                          default:
+                                              return match;
+                                      }
+                                  }
+                              });
+
+                              if (oldContent !== message.content) {
+                                  Logger.info(`Replacements made for ${platform}: Original: ${oldContent}, New: ${message.content}`);
                               }
                           } catch (error) {
-                              Logger.error(`Error processing replacement host for ${platform}: ${error}`);
+                              Logger.error(`Error processing replacement for ${platform}: ${error}`);
                           }
-                      });
+                      }
 
                       return message;
                   }
@@ -314,7 +378,7 @@ export default !global.ZeresPluginLibrary
                   patchSendMessage() {
                       const MessageActions = WebpackModules.getByProps('sendMessage');
                       Patcher.before(MessageActions, 'sendMessage', (_, args) => {
-                          const [channelId, message, messageId] = args;
+                          const [, message] = args;
                           args[1] = this._convertLinks(message);
                       });
                   }
@@ -322,16 +386,17 @@ export default !global.ZeresPluginLibrary
                   patchEditMessage() {
                       const MessageActions = WebpackModules.getByProps('editMessage');
                       Patcher.before(MessageActions, 'editMessage', (_, args) => {
-                          const [channelId, messageId, message] = args;
+                          const [, , message] = args;
                           args[2] = this._convertLinks(message, true);
                       });
                   }
 
                   patchUploadFiles() {
                       const MessageActions = WebpackModules.getByProps('uploadFiles');
-                      Patcher.before(MessageActions, 'uploadFiles', (_, props) => {
-                          if (props.length > 0 && props[0].parsedMessage && props[0].parsedMessage.content) {
-                              props[0].parsedMessage = this._convertLinks(props[0].parsedMessage);
+                      Patcher.before(MessageActions, 'uploadFiles', (_, args) => {
+                          const [uploadProps] = args;
+                          if (uploadProps.parsedMessage && uploadProps.parsedMessage.content) {
+                              uploadProps.parsedMessage = this._convertLinks(uploadProps.parsedMessage);
                           }
                       });
                   }
@@ -340,18 +405,22 @@ export default !global.ZeresPluginLibrary
                       const panel = new SettingPanel(() => this.saveSettings());
 
                       const alternativeHosts = {
-                          twitter: [{ label: 'Alternative (vxtwitter.com)', value: 'https://vxtwitter.com/' }],
-                          tiktok: [{ label: 'Alternative (vxtiktok.com)', value: 'https://www.vxtiktok.com/' }],
-                          instagram: [{ label: 'Alternative (ddinstagram.com)', value: 'https://www.ddinstagram.com/' }],
-                          reddit: [{ label: 'Alternative (rxddit.com)', value: 'https://rxddit.com/' }],
-                          bsky: [{ label: 'Alternative (bsyy.app)', value: 'https://bsyy.app/' }],
-                          threads: [{ label: 'Alternative (vxthreads.net)', value: 'https://vxthreads.net/' }],
-                          youtube: [{ label: 'Alternative (koutu.be)', value: 'https://koutu.be/' }],
+                          twitter: [{ label: 'Alternative (vxtwitter.com)', value: 'https://vxtwitter.com' }],
+                          tiktok: [{ label: 'Alternative (vxtiktok.com)', value: 'https://www.vxtiktok.com' }],
+                          instagram: [{ label: 'Alternative (ddinstagram.com)', value: 'https://www.ddinstagram.com' }],
+                          reddit: [{ label: 'Alternative (redditez.com)', value: 'https://redditez.com' }],
+                          bsky: [{ label: 'Alternative (bsyy.app)', value: 'https://bsyy.app' }],
+                          threads: [{ label: 'Alternative (vxthreads.net)', value: 'https://vxthreads.net' }],
+                          twitch: [{ label: 'Alternative (fxtwitch.seria.moe)', value: 'https://fxtwitch.seria.moe/clip' }],
+                          youtube: [{ label: 'Alternative (koutu.be)', value: 'https://koutu.be' }],
                       };
 
                       const predefinedHosts = this.conversionRules.reduce((acc, rule) => {
                           const platform = rule.id.toLowerCase();
-                          const defaultHost = { label: `Default (${new URL(rule.replacement).host})`, value: rule.replacement };
+                          const defaultHost = {
+                              label: `Default (${new URL(rule.replacement).host})`,
+                              value: rule.replacement,
+                          };
                           acc[platform] = [defaultHost];
 
                           if (alternativeHosts[platform]) {
@@ -361,9 +430,23 @@ export default !global.ZeresPluginLibrary
                           return acc;
                       }, {});
 
-                      Object.entries(this.settings.platforms).forEach(([platformKey, platformSettings]) => {
+                      const placeholderExamples = {
+                          twitter: 'https://example.com/{{username}}/status/{{statusId}}',
+                          tiktok: 'https://example.com/{{username}}/video/{{videoId}}',
+                          instagram: 'https://www.example.com/{{type}}/{{postId}}',
+                          bsky: 'https://example.app/profile/{{username}}/post/{{postId}}',
+                          threads: 'https://www.example.net/{{username}}/post/{{postId}}',
+                          reddit: 'https://example.com/r/{{subreddit}}/{{type}}/{{postId}}/{{postTitle}}',
+                          pixiv: 'https://example.net/artworks/{{artworkId}}',
+                          deviantart: 'https://www.example.com/{{username}}/art/{{artTitle}}',
+                          twitch: 'https://fxtwitch.example.com/clip/{{clipId}}',
+                          youtube: 'https://example.com/watch?v={{videoId}}',
+                          tumblr: 'https://example.com/{{username}}/{{postId}}/{{postTitle}}',
+                      };
+
+                      for (const [platformKey, platformSettings] of Object.entries(this.settings.platforms)) {
+                          const conversionRule = this.conversionRules.find((rule) => rule.id.toLowerCase() === platformKey);
                           const group = new SettingGroup(`Convert ${platformKey.charAt(0).toUpperCase() + platformKey.slice(1)} Links`);
-                          const hostOptions = predefinedHosts[platformKey].concat([{ label: 'Custom', value: 'custom' }]);
 
                           group.append(
                               new Switch(
@@ -374,12 +457,10 @@ export default !global.ZeresPluginLibrary
                                       platformSettings.enabled = checked;
                                       this.saveSettings();
                                   }
-                              )
-                          );
-                          group.append(
+                              ),
                               new Switch(
                                   `Convert on Message Edit`,
-                                  `Enable or disable the converting message on edit for ${platformKey}.`,
+                                  `Enable or disable converting messages on edit for ${platformKey}.`,
                                   platformSettings.editPatchEnabled,
                                   (checked) => {
                                       platformSettings.editPatchEnabled = checked;
@@ -387,6 +468,13 @@ export default !global.ZeresPluginLibrary
                                   }
                               )
                           );
+
+                          const hostOptions = predefinedHosts[platformKey].concat([{ label: 'Custom', value: 'custom' }]);
+
+                          if (!platformSettings.host || !hostOptions.some((option) => option.value === platformSettings.host)) {
+                              platformSettings.host = predefinedHosts[platformKey][0].value;
+                          }
+
                           group.append(
                               new Dropdown(
                                   'Host Selection',
@@ -397,42 +485,33 @@ export default !global.ZeresPluginLibrary
                                       platformSettings.host = selected;
                                       this.saveSettings();
                                   }
-                              )
-                          );
-                          group.append(
+                              ),
                               new Textbox(
-                                  'Custom Host URL',
-                                  'Enter your custom host URL.',
-                                  platformSettings.customHost,
+                                  'Custom URL Template',
+                                  `Enter your custom URL template. Available variables: ${conversionRule.variables
+                                      .map((v) => `{{${v}}}`)
+                                      .join(', ')}`,
+                                  platformSettings.customTemplate,
                                   (value) => {
-                                      platformSettings.customHost = value;
-
-                                      if (value === '' && platformSettings.host === 'custom') {
-                                          platformSettings.host = '';
-                                      } else if (platformSettings.host === 'custom') {
-                                          platformSettings.host = value;
+                                      platformSettings.customTemplate = value;
+                                      if (platformSettings.host === 'custom') {
+                                          platformSettings.host = 'custom';
                                       }
-
                                       this.saveSettings();
                                   },
                                   {
-                                      placeholder: 'https://example.com/',
+                                      placeholder: placeholderExamples[platformKey] || 'https://example.com/{{variable}}',
                                   }
                               )
                           );
 
                           panel.append(group);
-                      });
+                      }
 
                       return panel.getElement();
                   }
 
                   saveSettings() {
-                      Object.entries(this.settings.platforms).forEach(([platformKey, platformSettings]) => {
-                          if (platformSettings.host === platformSettings.customHost && platformSettings.customHost !== '') {
-                              platformSettings.host = 'custom';
-                          }
-                      });
                       Utilities.saveData(config.info.name, 'settings', this.settings);
                   }
               };
