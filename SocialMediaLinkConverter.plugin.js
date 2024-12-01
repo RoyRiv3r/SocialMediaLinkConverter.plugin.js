@@ -1,7 +1,7 @@
 /**
  * @name SocialMediaLinkConverter
  * @displayName SocialMediaLinkConverter
- * @version 0.1.3
+ * @version 0.1.4
  * @author Nears (RoyRiv3r)
  * @donate https://ko-fi.com/royriver
  * @authorId 196079888791240704
@@ -240,6 +240,12 @@ class MissingZeresDummy {
                           customTemplate: '',
                           editPatchEnabled: true,
                       },
+                      steam: {
+                        enabled: true,
+                        host: 'https://s.team',
+                        customTemplate: '',
+                        editPatchEnabled: true,
+                      },
                   },
               };
 
@@ -310,6 +316,12 @@ class MissingZeresDummy {
                       replacement: 'https://tpmblr.com',
                       variables: ['username', 'postId', 'postTitle'],
                   },
+                  {
+                    id: 'Steam',
+                    regex: /https?:\/\/(?:www\.)?store\.steampowered\.com\/app\/(\d+)(?:\/([^\/?#]+))?/gi,
+                    replacement: 'https://s.team',
+                    variables: ['appId'],
+                  }, 
               ];
 
               return class SocialMediaLinkConverter extends Plugin {
@@ -412,6 +424,8 @@ class MissingZeresDummy {
                                               } else {
                                                   return `${fixedHost}/${variables.username}/${variables.postId}`;
                                               }
+                                          case 'steam':
+                                              return `${fixedHost}/a/${variables.appId}`;
                                           default:
                                               return match;
                                       }
@@ -496,6 +510,7 @@ class MissingZeresDummy {
                           twitch: 'https://fxtwitch.example.com/clip/{{clipId}}',
                           youtube: 'https://example.com/watch?v={{videoId}}',
                           tumblr: 'https://example.com/{{username}}/{{postId}}/{{postTitle}}',
+                          steam: 'https://example.com/a/{{appId}}',
                       };
 
                       for (const [platformKey, platformSettings] of Object.entries(this.settings.platforms)) {
