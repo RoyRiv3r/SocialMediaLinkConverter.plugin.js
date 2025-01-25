@@ -1,7 +1,7 @@
 /**
  * @name SocialMediaLinkConverter
  * @displayName SocialMediaLinkConverter
- * @version 0.1.3
+ * @version 0.1.4
  * @author Nears (RoyRiv3r)
  * @donate https://ko-fi.com/royriver
  * @authorId 196079888791240704
@@ -61,16 +61,16 @@ const config = {
             },
         ],
         description: 'Improves link embedding for multiple websites (Twitter, Tiktok, Instagram, Bsky, etc.)',
-        version: '0.1.3',
+        version: '0.1.4',
         donate: 'https://ko-fi.com/royriver',
         source: 'https://github.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js',
         updateURL: 'https://raw.githubusercontent.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/main/SocialMediaLinkConverter.plugin.js',
     },
     changelog: [
         {
-            title: '0.1.3',
+            title: '0.1.4',
             type: 'added',
-            items: ['Improved custom URL', 'Added Tumblr host', 'Added new alternative fxtwitch host'],
+            items: ['Added Spotify host'],
         },
     ],
     main: 'SocialMediaLinkConverter.plugin.js',
@@ -240,6 +240,12 @@ class MissingZeresDummy {
                           customTemplate: '',
                           editPatchEnabled: true,
                       },
+                      spotify: {
+                          enabled: true,
+                          host: 'https://fxspotify.com',
+                          customTemplate: '',
+                          editPatchEnabled: true,
+                      },
                   },
               };
 
@@ -309,6 +315,12 @@ class MissingZeresDummy {
                       regex: /https?:\/\/(?:www\.)?(?:tumblr\.com)\/([^\/]+)\/(\d+)(?:\/([^\/?#]+))?|https?:\/\/([^\.]+)\.tumblr\.com\/post\/(\d+)(?:\/([^\/?#]+))?/gi,
                       replacement: 'https://tpmblr.com',
                       variables: ['username', 'postId', 'postTitle'],
+                  },
+                  {
+                      id: 'Spotify',
+                      regex: /https?:\/\/(?:open|player)\.spotify\.com\/(?:intl-\w+\/)?track\/([\w\d_-]+)(?:\?.*)?/gi,
+                      replacement: 'https://open.fxspotify.com',
+                      variables: ['trackId'],
                   },
               ];
 
@@ -412,6 +424,8 @@ class MissingZeresDummy {
                                               } else {
                                                   return `${fixedHost}/${variables.username}/${variables.postId}`;
                                               }
+                                          case 'spotify':
+                                              return `${fixedHost}/track/${variables.trackId}`;
                                           default:
                                               return match;
                                       }
@@ -467,6 +481,7 @@ class MissingZeresDummy {
                           threads: [{ label: 'Alternative (vxthreads.net)', value: 'https://vxthreads.net' }],
                           twitch: [{ label: 'Alternative (fxtwitch.seria.moe)', value: 'https://fxtwitch.seria.moe/clip' }],
                           youtube: [{ label: 'Alternative (koutu.be)', value: 'https://koutu.be' }],
+                          spotify: [{ label: 'Alternative (player.spotify.com)', value: 'https://player.spotify.com' }],
                       };
 
                       const predefinedHosts = this.conversionRules.reduce((acc, rule) => {
@@ -496,6 +511,7 @@ class MissingZeresDummy {
                           twitch: 'https://fxtwitch.example.com/clip/{{clipId}}',
                           youtube: 'https://example.com/watch?v={{videoId}}',
                           tumblr: 'https://example.com/{{username}}/{{postId}}/{{postTitle}}',
+                          spotify: 'https://example.com/track/{{trackId}}',
                       };
 
                       for (const [platformKey, platformSettings] of Object.entries(this.settings.platforms)) {
