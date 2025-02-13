@@ -7,16 +7,16 @@ const config = {
             },
         ],
         description: 'Improves link embedding for multiple websites (Twitter, Tiktok, Instagram, Bsky, etc.)',
-        version: '0.1.4',
+        version: '0.1.5',
         donate: 'https://ko-fi.com/royriver',
         source: 'https://github.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js',
         updateURL: 'https://raw.githubusercontent.com/RoyRiv3r/SocialMediaLinkConverter.plugin.js/main/SocialMediaLinkConverter.plugin.js',
     },
     changelog: [
         {
-            title: '0.1.4',
+            title: '0.1.5',
             type: 'added',
-            items: ['Added Spotify host'],
+            items: ['Added Bilibili host'],
         },
     ],
     main: 'SocialMediaLinkConverter.plugin.js',
@@ -192,6 +192,12 @@ export default !global.ZeresPluginLibrary
                           customTemplate: '',
                           editPatchEnabled: true,
                       },
+                      bilibili: {
+                          enabled: true,
+                          host: 'https://fxbilibili.seria.moe',
+                          customTemplate: '',
+                          editPatchEnabled: true,
+                      },
                   },
               };
 
@@ -267,6 +273,12 @@ export default !global.ZeresPluginLibrary
                       regex: /https?:\/\/(?:open|player)\.spotify\.com\/(?:intl-\w+\/)?track\/([\w\d_-]+)(?:\?.*)?/gi,
                       replacement: 'https://open.fxspotify.com',
                       variables: ['trackId'],
+                  },
+                  {
+                      id: 'Bilibili',
+                      regex: /https?:\/\/(?:www\.)?bilibili\.com\/video\/(BV[\w\d]+)/gi,
+                      replacement: 'https://fxbilibili.seria.moe',
+                      variables: ['videoId'],
                   },
               ];
 
@@ -372,6 +384,8 @@ export default !global.ZeresPluginLibrary
                                               }
                                           case 'spotify':
                                               return `${fixedHost}/track/${variables.trackId}`;
+                                          case 'bilibili':
+                                              return `${fixedHost}/video/${variables.videoId}`;
                                           default:
                                               return match;
                                       }
@@ -458,6 +472,7 @@ export default !global.ZeresPluginLibrary
                           youtube: 'https://example.com/watch?v={{videoId}}',
                           tumblr: 'https://example.com/{{username}}/{{postId}}/{{postTitle}}',
                           spotify: 'https://example.com/track/{{trackId}}',
+                          bilibili: 'https://example.com/video/{{videoId}}',
                       };
 
                       for (const [platformKey, platformSettings] of Object.entries(this.settings.platforms)) {
