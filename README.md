@@ -69,6 +69,7 @@ The build tools for this project are based on [JustOptimize's](https://github.co
 -   [YouTube Discord Embed](https://github.com/ray-1337/youtube-discord-embed), [Koutube](https://github.com/iGerman00/koutube)
 -   [FxTumblr](https://github.com/knuxify/fxtumblr)
 -   [Spotify](https://github.com/dotconnexion/fxspotify)
+-   [Bilibili](https://github.com/seriaati/fxBilibili)
 
 ## License
 
