@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-    <a href="https://ko-fi.com/P5P8OF276">
+    <a href="https://ko-fi.com/royriver">
         <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Ko-fi Donation Page">
     </a>
 </p>
