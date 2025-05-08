@@ -22,7 +22,7 @@ module.exports = {
         // eslint-disable-next-line no-undef
         path: path.join(__dirname, 'dist'),
         libraryTarget: 'commonjs2',
-        libraryExport: 'default',
+        // libraryExport: 'default',
         compareBeforeEmit: false,
     },
     resolve: {
